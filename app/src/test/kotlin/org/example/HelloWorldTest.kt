@@ -6,7 +6,7 @@ package org.example
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class AppTest {
+class HelloWorldTest {
     @Test fun appHasAGreeting() {
         val classUnderTest = HelloWorld()
         assertNotNull(classUnderTest.greeting, "app should have a greeting")
