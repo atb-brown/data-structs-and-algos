@@ -17,7 +17,7 @@ class SimpleSearch(haystack: Array<String>) {
         if (needleIndex >= 0) {
             return needleIndex
         } else {
-            throw RuntimeException("Needle ${needle} not found in haystack.")
+            throw RuntimeException("Needle $needle not found in haystack.")
         }
     }
 }
