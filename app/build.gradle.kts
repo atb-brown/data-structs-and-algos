@@ -23,14 +23,14 @@ repositories {
 dependencies {
     // Use the Kotlin JUnit 5 integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-
     // Use the JUnit 5 integration.
     testImplementation(libs.junit.jupiter.engine)
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    // This dependency is used by the application.
+    // These dependencies are used by the application.
     implementation(libs.guava)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -43,6 +43,10 @@ java {
 application {
     // Define the main class for the application.
     mainClass = "org.example.HelloWorldKt"
+}
+
+ktlint {
+    outputToConsole = true
 }
 
 tasks.named<Test>("test") {
