@@ -1,12 +1,7 @@
 package org.hash
 
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.int
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
+import org.util.TestDataRunner
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -59,40 +54,38 @@ class HashSetTest {
         assertFalse(mySet.contains(5))
     }
 
-    // TODO: Simplify this test case.
     @Test
     fun largeTest() {
-        // TODO: Make Json parsing easier with a class.
-        val rawJson = TroubleshootingHashSet::class.java.getResource("/org/hash/hashSetTestData.json")!!.readText()
-        val json = Json.parseToJsonElement(rawJson).jsonObject
+        val jsonReader = TestDataRunner("/org/hash/hashSetTestData.json")
 
         val mySet = TroubleshootingHashSet(false)
-        val testCases = json.get("testFunction")?.jsonArray?.size ?: -1
-        for (i in 1..<testCases) {
-            val testFunction = json.get("testFunction")!!.jsonArray.get(i).jsonPrimitive.content
-            val param1 = json.get("testParam1")!!.jsonArray.get(i - 1).jsonPrimitive.int
-            val expectedOutput = json.get("expectedOutput")!!.jsonArray.get(i).jsonPrimitive.content
+        jsonReader.forEach { operation, params ->
+            val key = params[0].toInt()
+            return@forEach doOperation(mySet, operation, key)
+        }
+    }
 
-            val output =
-                when (testFunction) {
-                    "add" -> {
-                        mySet.add(param1)
-                        "null"
-                    }
+    private fun doOperation(
+        mySet: TroubleshootingHashSet,
+        operation: String,
+        key: Int,
+    ): String {
+        return when (operation) {
+            "add" -> {
+                mySet.add(key)
+                "null"
+            }
 
-                    "contains" -> {
-                        mySet.contains(param1).toString()
-                    }
+            "contains" -> {
+                mySet.contains(key).toString()
+            }
 
-                    "remove" -> {
-                        mySet.remove(param1)
-                        "null"
-                    }
+            "remove" -> {
+                mySet.remove(key)
+                "null"
+            }
 
-                    else -> "$testFunction : ❌❌❌❌❌"
-                }
-
-            assertEquals(expectedOutput, output)
+            else -> error("Unrecognized operation.")
         }
     }
 }
