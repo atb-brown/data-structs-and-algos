@@ -10,5 +10,5 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
-rootProject.name = "udemy-data-structs-and-algos"
+rootProject.name = "data-structs-and-algos"
 include("app")
