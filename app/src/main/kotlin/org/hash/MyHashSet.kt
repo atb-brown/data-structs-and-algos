@@ -2,6 +2,8 @@ package org.hash
 
 /**
  * This class will be submitted to leetcode.
+ *
+ * https://leetcode.com/explore/learn/card/hash-table/182/practical-applications/1139/
  */
 open class MyHashSet() {
     private val bucketSize = 10_000
