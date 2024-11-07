@@ -13,6 +13,7 @@ plugins {
     application
 
     id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
+    id("io.gitlab.arturbosch.detekt") version "1.23.7"
 }
 
 repositories {
@@ -47,6 +48,11 @@ application {
 
 ktlint {
     outputToConsole = true
+    additionalEditorconfig.set(
+        mapOf(
+            "max_line_length" to "120",
+        ),
+    )
 }
 
 tasks.named<Test>("test") {

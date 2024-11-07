@@ -5,13 +5,15 @@ package org.hash
  *
  * https://leetcode.com/explore/learn/card/hash-table/182/practical-applications/1140/
  */
-open class MyHashMap() {
-    private val bucketSize = 10_000
-    private val empty = -1
-    private val emptyBucket = null
+open class MyHashMap {
+    companion object {
+        private const val BUCKET_SIZE = 10_000
+        private const val EMPTY = -1
+        private val EMPTY_BUCKET = null
+    }
 
     // Use an array list in order to avoid broken collision chains.
-    private val buckets = Array<ArrayList<Element>?>(bucketSize) { emptyBucket }
+    private val buckets = Array<ArrayList<Element>?>(BUCKET_SIZE) { EMPTY_BUCKET }
 
     fun put(
         key: Int,
@@ -19,7 +21,7 @@ open class MyHashMap() {
     ) {
         val hash = hash(key)
         val bucket = buckets[hash]
-        if (bucket == emptyBucket) {
+        if (bucket == EMPTY_BUCKET) {
             buckets[hash] = ArrayList(listOf(Element(key, value)))
         } else {
             val element = getElement(key)
@@ -32,7 +34,7 @@ open class MyHashMap() {
     }
 
     fun get(key: Int): Int {
-        return getElement(key)?.value ?: empty
+        return getElement(key)?.value ?: EMPTY
     }
 
     private fun getElement(key: Int): Element? {
@@ -46,7 +48,7 @@ open class MyHashMap() {
     }
 
     protected open fun hash(key: Int): Int {
-        return key % (bucketSize - 1)
+        return key % (BUCKET_SIZE - 1)
     }
 
     protected open fun ifFound(
@@ -70,7 +72,7 @@ open class MyHashMap() {
     }
 
     protected open fun contains(key: Int): Boolean {
-        return get(key) != empty
+        return get(key) != EMPTY
     }
 
     class Element(val key: Int, var value: Int)

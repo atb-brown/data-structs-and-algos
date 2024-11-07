@@ -9,7 +9,8 @@ import kotlin.test.assertEquals
 typealias TestOperationRun = (operation: String, params: ArrayList<String>) -> String
 
 /**
- * This class can be used to run test cases that are defined in json files. This is particularly helpful for large data sets.
+ * This class can be used to run test cases that are defined in json files. This is particularly helpful for large data
+ * sets.
  */
 class TestDataRunner(file: String) {
     private val rawJson = this::class.java.getResource(file)!!.readText()
