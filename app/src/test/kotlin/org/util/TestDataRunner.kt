@@ -1,6 +1,7 @@
 package org.util
 
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -13,69 +14,68 @@ typealias TestOperationRun = (operation: String, params: ArrayList<String>) -> S
  * sets.
  */
 class TestDataRunner(file: String) {
+    companion object {
+        private val KEYS =
+            ArrayList(
+                listOf(
+                    "testOperations",
+                    "testParams",
+                    "expectedOutput",
+                ),
+            )
+
+        private const val TEST_OPS = 0
+        private const val TEST_PARAMS = 1
+        private const val EXP_OUTPUT = 2
+    }
+
     private val rawJson = this::class.java.getResource(file)!!.readText()
     private val json = Json.parseToJsonElement(rawJson).jsonObject
 
-    private val testOperations = json["testOperations"]!!.jsonArray
-    private val expectedOutput = json["expectedOutput"]!!.jsonArray
+    private val testOperations = requiredJsonArray(TEST_OPS)
+    private val testParams = requiredJsonArray(TEST_PARAMS)
+    private val expectedOutput = requiredJsonArray(EXP_OUTPUT)
+
+    private fun requiredJsonArray(keyIndex: Int): JsonArray {
+        val key = KEYS[keyIndex]
+        requireNotNull(json[key]) {
+            val unexpectedKeys = "\"${json.keys.filter { s -> !KEYS.contains(s) }.joinToString(", ")}\""
+            "Test file did not have a(n) \"$key\" array. Is there a typo in one of this/these key(s)? $unexpectedKeys"
+        }
+        return json[key]!!.jsonArray
+    }
 
     private fun getNumTestCases(): Int {
         return testOperations.size
     }
 
+    private fun getTestParams(index: Int): ArrayList<String> {
+        return ArrayList(testParams[index].jsonArray.toList().map { it.jsonPrimitive.content })
+    }
+
     private fun getOperation(index: Int): String {
-        return testOperations.get(index).jsonPrimitive.content
-    }
-
-    private fun getParameter(
-        index: Int,
-        paramNum: Int,
-    ): String {
-        return json["testParam$paramNum"]!!.jsonArray.get(index).jsonPrimitive.content
-    }
-
-    private fun parameterExists(paramNum: Int): Boolean {
-        return json["testParam$paramNum"] != null
+        return testOperations[index].jsonPrimitive.content
     }
 
     private fun getExpectedOutput(index: Int): String {
-        return expectedOutput.get(index).jsonPrimitive.content
+        return expectedOutput[index].jsonPrimitive.content
     }
 
     fun forEach(run: TestOperationRun) {
-        var paramCount = 0
-        while (parameterExists(paramCount + 1)) {
-            paramCount++
-        }
-
         for (testCase in 1..<getNumTestCases()) {
-            val paramList = buildParamList(testCase, paramCount)
-            runTestCase(testCase, paramList, run)
+            runTestCase(testCase, run)
         }
-    }
-
-    private fun buildParamList(
-        testCase: Int,
-        paramCount: Int,
-    ): ArrayList<String> {
-        var paramList = ArrayList<String>()
-        for (p in 1..paramCount) {
-            paramList.add(getParameter(testCase - 1, p))
-        }
-
-        return paramList
     }
 
     private fun runTestCase(
         testCase: Int,
-        paramList: ArrayList<String>,
         run: TestOperationRun,
     ) {
-        val output = run(getOperation(testCase), paramList)
+        val output = run(getOperation(testCase), getTestParams(testCase))
         assertEquals(
             getExpectedOutput(testCase),
             output,
-            "TestCase $testCase: ${getOperation(testCase)}(${paramList.joinToString(", ")}) Expected ${
+            "TestCase $testCase: ${getOperation(testCase)}(${getTestParams(testCase).joinToString(", ")}) Expected ${
                 getExpectedOutput(
                     testCase,
                 )
