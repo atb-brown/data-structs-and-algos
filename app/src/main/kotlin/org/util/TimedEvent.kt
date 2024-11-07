@@ -2,7 +2,7 @@ package org.util
 
 import java.time.Instant
 
-class TimedEvent() {
+class TimedEvent {
     val ts = Instant.now().toEpochMilli()
 
     fun timeSince(): String {

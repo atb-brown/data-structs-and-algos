@@ -14,16 +14,7 @@ class SimpleSearch(haystack: Array<String>) {
             }
         }
 
-        if (needleIndex >= 0) {
-            return needleIndex
-        } else {
-            throw RuntimeException("Needle $needle not found in haystack.")
-        }
+        require(needleIndex >= 0) { "Needle $needle not found in haystack." }
+        return needleIndex
     }
-}
-
-fun main() {
-//    SimpleSearch(arrayOf("nemo")).find("nemo")
-//    SimpleSearch(arrayOf("dory", "bruce", "marlin", "nemo", "gill", "bloat", "nigel", "squirt", "darla", "hank")).find("nemo")
-//    SimpleSearch(Array<String>(100000) { "nemo" }).find("nemo")
 }

@@ -1,4 +1,4 @@
 package org.hash
 
-class TroubleshootingHashMap() : MyHashMap()
+class TroubleshootingHashMap : MyHashMap()
 // Currently no reason to troubleshoot this class.

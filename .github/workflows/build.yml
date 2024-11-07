@@ -29,6 +29,9 @@ jobs:
       - name: ktLint
         run: ./gradlew ktLintCheck
 
+      - name: detekt
+        run: ./gradlew detekt
+
   test:
     name: Run Unit Tests
     runs-on: ubuntu-latest

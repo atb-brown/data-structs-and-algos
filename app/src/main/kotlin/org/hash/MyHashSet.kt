@@ -5,17 +5,19 @@ package org.hash
  *
  * https://leetcode.com/explore/learn/card/hash-table/182/practical-applications/1139/
  */
-open class MyHashSet() {
-    private val bucketSize = 10_000
-    private val empty = null
+open class MyHashSet {
+    companion object {
+        private const val BUCKET_SIZE = 10_000
+        private val EMPTY = null
+    }
 
     // Use an array list in order to avoid broken collision chains.
-    private val buckets = Array<ArrayList<Int>?>(bucketSize) { empty }
+    private val buckets = Array<ArrayList<Int>?>(BUCKET_SIZE) { EMPTY }
 
     open fun add(key: Int) {
         val hash = hash(key)
         val bucket = buckets[hash]
-        if (bucket == empty) {
+        if (bucket == EMPTY) {
             buckets[hash] = ArrayList(listOf(key))
         } else if (!bucket.contains(key)) {
             // Don't add a duplicate key.
@@ -34,7 +36,7 @@ open class MyHashSet() {
     }
 
     protected open fun hash(key: Int): Int {
-        return key % (bucketSize - 1)
+        return key % (BUCKET_SIZE - 1)
     }
 }
 
